@@ -2,8 +2,10 @@ require 'rails_helper'
 
 feature 'restaurants' do
   include Helpers
+
   before do
-    @user = User.find_by_email('test@test.com')
+    sign_up
+    @user = User.find_by_email('test@example.com')
   end
 
   context 'no restaurants have been added' do
@@ -29,7 +31,6 @@ feature 'restaurants' do
 
   context 'creating restaurants' do
     scenario 'prompts user to fill out a form, then displays the new restaurant' do
-      sign_up_sign_in
       visit '/restaurants'
       click_link 'Add a restaurant'
       fill_in 'Name', with: 'Carluccio\'s'
@@ -40,7 +41,6 @@ feature 'restaurants' do
 
     context 'an invalid restaurant' do
       scenario 'does not let you submit a name that is too short' do
-        sign_up_sign_in
         visit '/restaurants'
         click_link 'Add a restaurant'
         fill_in 'Name', with: 'kf'
@@ -66,7 +66,6 @@ feature 'restaurants' do
   context 'editing restaurants' do
     before { @user.restaurants.create name: 'Zefi', description: 'Healthy and home-made', id: 1 }
     scenario 'let a user edit a restaurant' do
-      sign_up_sign_in
       visit '/restaurants'
       click_link 'Edit Zefi'
       fill_in 'Name', with: 'Zefi'
@@ -84,7 +83,6 @@ feature 'restaurants' do
     before { @user.restaurants.create name: 'Zefi', description: 'Healthy and home-made' }
 
     scenario 'removes a restaurant when a user clicks a delete link' do
-      sign_up_sign_in
       visit '/restaurants'
       click_link 'Delete Zefi'
       expect(page).not_to have_content 'Zefi'
